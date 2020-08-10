@@ -9,6 +9,11 @@ display = pygame.display
 display.set_caption('Sokoban')
 surface = display.set_mode((width, height))
 
+movement = {
+    pygame.K_w:pygame.K_s, pygame.K_s:pygame.K_w,
+    pygame.K_a: pygame.K_d, pygame.K_d: pygame.K_a
+}
+
 character = Character()
 box = Box()
 
@@ -36,11 +41,8 @@ while True:
             exit(0)
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_w and character.y > 0 and not box.is_hit(character.hitbox):
-                character.y -= 60
-            if event.key == pygame.K_a and character.x > 0 and not box.is_hit(character.hitbox):
-                character.x -= 60
-            if event.key == pygame.K_s and character.y < 480 - 60 and not box.is_hit(character.hitbox):
-                character.y += 60
-            if event.key == pygame.K_d and character.x < 720 - 60 and not box.is_hit(character.hitbox):
-                character.x += 60
+            character.move(key=event.key, box=box)
+
+            if box.is_hit(character):
+                if not box.move(key=event.key):
+                    character.move(key=movement.get(event.key), box=box)

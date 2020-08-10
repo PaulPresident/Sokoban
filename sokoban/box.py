@@ -5,18 +5,30 @@ class Box():
         self.surface = pygame.image.load('resources/images/box.png')
         self.x = 60
         self.y = 60
-        self.hitbox = ((60, 60), (120, 60), (60, 120), (120, 120))
+
+    @property
+    def hitbox(self):
+        return (self.x, self.y, self.x+60, self.y+60)
 
     def draw(self, surface):
         surface.blit(self.surface, (self.x, self.y))
 
-    # TODO doesnt work
-    def is_hit(self, hitbox):
-        collisions = 0
-        for coor in hitbox:
-            for coor2 in self.hitbox:
-                if coor == coor2:
-                    collisions += 1
-        if collisions == 2:
+    def is_hit(self, character):
+        if self.hitbox[0] < character.x + 30 < self.hitbox[2] and self.hitbox[1] < character.y + 30 < self.hitbox[3]:
+            return True
+        return False
+
+    def move(self, key):
+        if key == pygame.K_w and self.y > 0:
+            self.y -= 60
+            return True
+        if key == pygame.K_a and self.x > 0:
+            self.x -= 60
+            return True
+        if key == pygame.K_s and self.y < 480 - 60:
+            self.y += 60
+            return True
+        if key == pygame.K_d and self.x < 720 - 60:
+            self.x += 60
             return True
         return False
