@@ -15,7 +15,7 @@ class Character():
             self.y -= 60
         if key == pygame.K_a and self.x > 0:
             self.x -= 60
-        if key == pygame.K_s and self.y < 780 - 60:
+        if key == pygame.K_s and self.y < 480 - 60:
             self.y += 60
         if key == pygame.K_d and self.x < 720 - 60:
             self.x += 60
