@@ -1,34 +1,28 @@
 import pygame
 
-class Box():
+from sokoban.movement import Movement
+
+class Box(Movement):
     def __init__(self):
-        self.surface = pygame.image.load('resources/images/box.png')
-        self.x = 60
-        self.y = 60
+        self.picture = pygame.image.load("resources/images/box.png")
+        self.width, self.height = self.picture.get_width(), self.picture.get_height()
+        self.x = 65
+        self.y = 65
 
     @property
     def hitbox(self):
-        return (self.x, self.y, self.x+60, self.y+60)
+        return pygame.Rect(self.x-5, self.y-5, self.width+10, self.height+10)
 
     def draw(self, surface):
-        surface.blit(self.surface, (self.x, self.y))
+        pygame.draw.rect(surface, (255, 0, 0), self.hitbox, 1)
+        surface.blit(self.picture, (self.x, self.y))
 
-    def is_hit(self, character):
-        if self.hitbox[0] < character.x + 30 < self.hitbox[2] and self.hitbox[1] < character.y + 30 < self.hitbox[3]:
-            return True
+    def is_stored(self, storage_places:list):
+        for storage in storage_places:
+            if self.hitbox.colliderect(storage.hitbox):
+                return True
         return False
 
     def move(self, key):
-        if key == pygame.K_w and self.y > 0:
-            self.y -= 60
-            return True
-        if key == pygame.K_a and self.x > 0:
-            self.x -= 60
-            return True
-        if key == pygame.K_s and self.y < 480 - 60:
-            self.y += 60
-            return True
-        if key == pygame.K_d and self.x < 720 - 60:
-            self.x += 60
-            return True
-        return False
+        if key in self.controls:
+            return self.controls.get(key)()

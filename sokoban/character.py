@@ -1,21 +1,22 @@
 import pygame
 
-class Character():
+from sokoban.movement import Movement
+
+class Character(Movement):
     def __init__(self):
-        self.surface = pygame.image.load('resources/images/character (Mini) (Custom).png')
+        self.picture = pygame.image.load("resources/images/character (Mini) (Custom).png")
+        self.width, self.height = self.picture.get_width(), self.picture.get_height()
         self.x = 0
         self.y = 0
-        self.hitbox = (self.x, self.y, self.x + 60, self.y + 60)
+
+    @property
+    def hitbox(self):
+        return pygame.Rect(self.x, self.y, self.width, self.height)
 
     def draw(self, surface):
-        surface.blit(self.surface, (self.x, self.y))
+        pygame.draw.rect(surface, (255, 0, 0), self.hitbox, 1)
+        surface.blit(self.picture, (self.x, self.y))
 
-    def move(self, key, box):
-        if key == pygame.K_w and self.y > 0:
-            self.y -= 60
-        if key == pygame.K_a and self.x > 0:
-            self.x -= 60
-        if key == pygame.K_s and self.y < 480 - 60:
-            self.y += 60
-        if key == pygame.K_d and self.x < 720 - 60:
-            self.x += 60
+    def move(self, key):
+        if key in self.controls:
+            self.controls.get(key)()
