@@ -4,8 +4,19 @@ width, height = 1280, 720
 
 class Movement():
     def __init__(self):
+        self.width, self.height = 0, 0
+        self.unoccupied_nodes = []
         self.x = 0
         self.y = 0
+
+    @property
+    def future_hitbox(self):
+        return {
+            'up': pygame.Rect(self.x, self.y-60, self.width, self.height),
+            'down': pygame.Rect(self.x, self.y+60, self.width, self.height),
+            'right': pygame.Rect(self.x+60, self.y, self.width, self.height),
+            'left': pygame.Rect(self.x-60, self.y, self.width, self.height),
+        }
 
     @property
     def controls(self):
@@ -17,25 +28,29 @@ class Movement():
         }
 
     def move_up(self):
-        if self.y > 0:
-            self.y -= 60
-            return True
+        for node in self.unoccupied_nodes:
+            if self.y > 0 and self.future_hitbox.get('up').colliderect(node.hitbox):
+                self.y -= 60
+                return True
         return False
 
     def move_down(self):
-        if self.y < height - 60:
-            self.y += 60
-            return True
+        for node in self.unoccupied_nodes:
+            if self.y < height - 60 and self.future_hitbox.get('down').colliderect(node.hitbox):
+                self.y += 60
+                return True
         return False
 
     def move_right(self):
-        if self.x < width - 60:
-            self.x += 60
-            return True
+        for node in self.unoccupied_nodes:
+            if self.x < width - 60 and self.future_hitbox.get('right').colliderect(node.hitbox):
+                self.x += 60
+                return True
         return False
 
     def move_left(self):
-        if self.x > 0:
-            self.x -= 60
-            return True
+        for node in self.unoccupied_nodes:
+            if self.x > 0 and self.future_hitbox.get('left').colliderect(node.hitbox):
+                self.x -= 60
+                return True
         return False
