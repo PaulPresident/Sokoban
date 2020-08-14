@@ -42,7 +42,7 @@ class Generator():
                 box_node = self._random_node()
                 node = self.nodes[box_node]
             # box = Box(x=node.x * self.size, y=node.y * self.size)
-            boxes.append(Box(x=node.x * self.size, y=node.y * self.size)) # depends on the picture
+            boxes.append(Box(x=node.x * self.size + 5, y=node.y * self.size + 5)) # depends on the picture
         return boxes
 
     def _random_node(self):

@@ -2,13 +2,13 @@ import pygame
 from pygame.locals import *
 
 
-# from sokoban.movement import width, height  # TODO find better place to store
 from sokoban.button import Button
 from sokoban.game import Game
 from sokoban.generator import Generator
 from sokoban.character import Character
 from sokoban.storage import Storage
 from sokoban.box import Box
+from sokoban.movement import Movement
 
 pygame.init()
 display = pygame.display
@@ -18,18 +18,17 @@ display.set_caption('Sokoban')
 width, height = 1600, 900
 
 main_menu = display.set_mode((width, height))
-game_board = display.set_mode((width, height))
-end = display.set_mode((width, height))
+game_screen = display.set_mode((width, height))
+
 in_main_menu = True
 in_game = False
-in_end = False
 
 movement = {
     pygame.K_w:pygame.K_s, pygame.K_s:pygame.K_w,
     pygame.K_a: pygame.K_d, pygame.K_d: pygame.K_a
 } # TODO find better place to store under movement class maybe
 
-play_button = Button("resources/images/start button.png", (200, 140))
+play_button = Button("resources/images/Play Button.png", (200, 140))
 
 
 while in_main_menu:
@@ -76,17 +75,18 @@ for row in range(0, 9):
         all_rects.append(pygame.Rect(x1 + (60 * col), y1 + (60 * row), tile_w, tile_h))
 
 
-game = Game.easy()
+game = Game.generate()
+game.check_nodes()
 game.create_map()
 
 while in_game:
-    game_board.fill((184, 180, 163))
+    game_screen.fill((184, 180, 163))
 
     for rect in all_rects:
-        pygame.draw.rect(game_board, (0, 0, 0), rect, 1)
-    # game.check_nodes()
-    game.draw(screen=game_board)
-    game.character.draw(screen=game_board)
+        pygame.draw.rect(game_screen, (0, 0, 0), rect, 1)
+    game.check_nodes()
+    game.draw(screen=game_screen)
+    game.character.draw(screen=game_screen)
 
     pygame.display.flip()
 
@@ -101,7 +101,7 @@ while in_game:
             for box in game.boxes:
                 if box.hitbox.colliderect(game.character.hitbox):
                     if not box.move(key=event.key):
-                        game.character.move(key=movement.get(event.key))
+                        game.character.move(key=Movement.OPPOSITE_MOVEMENT.get(event.key))
 
     if game.win():
         pygame.quit()

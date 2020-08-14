@@ -14,7 +14,7 @@ class Game():
         self.stored_boxes = []
 
     def create_map(self):
-        pathfinder = PathFinder(boxes=self.boxes, storage_places=self.storage_places)
+        pathfinder = PathFinder(nodes=self.nodes)
 
         for node_coor in pathfinder.path():
             for node in self.nodes:
@@ -34,21 +34,21 @@ class Game():
     def check_nodes(self):
         unoccupied_nodes = []
         for node in self.nodes:
-            # node.reset()
-            if self.character.hitbox.colliderect(node.hitbox):
+            if node.hitbox.colliderect(self.character.hitbox):
                 node.closed = False
                 node.open = True
                 node.occupied = True
             for box in self.boxes:
-                if box.hitbox.colliderect(node.hitbox):
+                if node.hitbox.colliderect(box.hitbox):
                     node.closed = False
                     node.open = True
                     node.occupied = True
                     node.has_box = True
             for storage in self.storage_places:
-                if storage.hitbox.colliderect(node.hitbox):
+                if node.hitbox.colliderect(storage.hitbox):
                     node.closed = False
                     node.open = True
+                    node.is_storage = True
             if not node.closed or node.has_box:
                 unoccupied_nodes.append(node)
         self.character.unoccupied_nodes = unoccupied_nodes
@@ -70,7 +70,7 @@ class Game():
 
 # TODO figure out sizes
     @classmethod
-    def easy(cls):
+    def generate(cls):
         generator = Generator(nodes=10, size=60, num_of_boxes=3)
         return cls(
             size=60, nodes=generator.nodes,
@@ -78,11 +78,3 @@ class Game():
             storage_places=generator.generate_storage_places(),
             boxes=generator.generate_boxes()
         )
-
-    @classmethod
-    def medium(cls):
-        return cls(nodes=100)
-
-    @classmethod
-    def hard(cls):
-        return cls(nodes=175)

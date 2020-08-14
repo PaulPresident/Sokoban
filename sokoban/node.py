@@ -5,11 +5,11 @@ class Node():
         self.wall = pygame.image.load("resources/images/custom Character.png")
         self.x = x
         self.y = y
-        # self.node = self.x * self.y
         self.size = size
         self.closed = True
         self.open = False
         self.has_box = False
+        self.is_storage = False
         self.occupied = False
 
     @property
@@ -20,4 +20,5 @@ class Node():
         self.closed = True
         self.open = False
         self.has_box = False
+        self.is_storage = False
         self.occupied = False

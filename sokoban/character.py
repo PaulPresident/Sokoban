@@ -10,9 +10,9 @@ class Character(Movement):
         self.x = x
         self.y = y
 
-    @property
-    def node(self):
-        return (round(self.x/60), round(self.y/60))
+    # @property
+    # def node(self):
+    #     return (round(self.x/60), round(self.y/60))
 
     @property
     def hitbox(self):
